@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THEME MAKER</title>
+    <style>
+        :root {
+            --bg-dark: #212432;
+            --bg-gradient: linear-gradient(135deg, #212432 0%, #302D51 100%);
+            --card-bg: #2B2F42;
+            --border-color: #3A3F58;
+            --text-primary: #F0F2F8;
+            --text-secondary: #9DA4BE;
+            --accent-blue: #5C8AFF;
+            --accent-hover: #7A9EFF;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-gradient);
+            background-color: var(--bg-dark);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s ease;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 75rem;
+            margin-inline: auto;
+            padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 4vw, 2.5rem);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(3rem, 7vw, 5rem);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.25rem;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hero-title {
+            font-size: clamp(2.2rem, calc(5vw + 1rem), 3.8rem);
+            font-weight: 800;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            max-width: 42rem;
+            font-size: clamp(1rem, calc(0.8vw + 0.8rem), 1.25rem);
+            color: var(--text-secondary);
+        }
+
+        .section-title {
+            font-size: clamp(1.5rem, calc(2vw + 1rem), 2.25rem);
+            margin-bottom: 1.5rem;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(16rem, 30vw, 22rem), 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 0.0625rem solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: clamp(1.25rem, 3vw, 1.75rem);
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-blue);
+        }
+
+        .picker-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .picker-card {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 32rem;
+            border-radius: 0.75rem;
+            border: 0.0625rem solid var(--border-color);
+            padding: clamp(1rem, 4vw, 1.5rem);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.4);
+        }
+
+        .color-list {
+            display: flex;
+            gap: 0.625rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .color-item {
+            display: flex;
+            align-items: center;
+            background: var(--bg-dark);
+            border: 0.0625rem solid var(--border-color);
+            border-radius: 1.25rem;
+            padding: 0.25rem 0.625rem 0.25rem 0.375rem;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .color-item.active { border-color: var(--accent-blue); }
+
+        .color-dot {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .add-btn {
+            background: var(--bg-dark);
+            border: 0.0625rem dashed var(--accent-blue);
+            color: var(--accent-blue);
+            width: 2.125rem;
+            height: 2.125rem;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .mode-toggle {
+            display: flex;
+            background: var(--bg-dark);
+            border-radius: 0.375rem;
+            padding: 0.25rem;
+            gap: 0.25rem;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        .mode-btn.active {
+            background: var(--accent-blue);
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        .display-area {
+            display: flex;
+            height: clamp(8rem, 25vh, 12rem);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .preview-box { flex: 1; }
+
+        .canvas-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #satValCanvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .pointer {
+            width: 0.875rem;
+            height: 0.875rem;
+            border: 0.125rem solid #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        #hueSlider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 0.75rem;
+            border-radius: 0.375rem;
+            background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+            outline: none;
+        }
+
+        #hueSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 1.125rem;
+            height: 1.125rem;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 0.125rem solid var(--accent-blue);
+            cursor: pointer;
+        }
+
+        .output-box {
+            background-color: var(--bg-dark);
+            border: 0.0625rem solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.625rem 0.875rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .output-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .output-value {
+            font-size: 0.9375rem;
+            font-family: monospace;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(calc(50% - 0.25rem), 1fr));
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <section class="hero">
+            <h1 class="hero-title">THEME MAKER BY - nlxsh</h1>
+            <p class="hero-desc">Interactive Palette Builder with Instant Screen Background Syncing.</p>
+        </section>
+
+        <section class="picker-section">
+            <div class="picker-card">
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="btnBlend" onclick="switchMode('blend')">Combined / Blend</button>
+                    <button class="mode-btn" id="btnGradient" onclick="switchMode('gradient')">Gradient</button>
+                </div>
+
+                <div class="color-list" id="colorList"></div>
+
+                <div class="display-area">
+                    <div class="preview-box" id="previewBox"></div>
+                    <div class="canvas-container">
+                        <canvas id="satValCanvas"></canvas>
+                        <div class="pointer" id="pickerPointer"></div>
+                    </div>
+                </div>
+
+                <div class="slider-container">
+                    <input type="range" id="hueSlider" min="0" max="360" value="229">
+                </div>
+
+                <div class="output-box" onclick="copyToClipboard('outHex')">
+                    <div>
+                        <div class="output-label">HEX</div>
+                        <div class="output-value" id="outHex">#212432</div>
+                    </div>
+                    <span style="color: var(--accent-blue); font-size: 0.75rem;">Copy</span>
+                </div>
+
+                <div class="grid-2">
+                    <div class="output-box" onclick="copyToClipboard('outRgb')">
+                        <div>
+                            <div class="output-label">RGB</div>
+                            <div class="output-value" id="outRgb">33, 36, 50</div>
+                        </div>
+                    </div>
+                    <div class="output-box" onclick="copyToClipboard('outCmyk')">
+                        <div>
+                            <div class="output-label">CMYK</div>
+                            <div class="output-value" id="outCmyk">34%, 28%, 0%, 80%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="output-box" onclick="copyToClipboard('outHsv')">
+                        <div>
+                            <div class="output-label">HSV</div>
+                            <div class="output-value" id="outHsv">229°, 34%, 20%</div>
+                        </div>
+                    </div>
+                    <div class="output-box" onclick="copyToClipboard('outHsl')">
+                        <div>
+                            <div class="output-label">HSL</div>
+                            <div class="output-value" id="outHsl">229°, 20%, 16%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+<script>
+    let colors = ['#212432', '#302D51']; 
+    let activeIndex = 0;
+    let mode = 'blend'; 
+
+    let currentHue = 229;
+    let currentSat = 0.34;
+    let currentVal = 0.20;
+
+    const canvas = document.getElementById('satValCanvas');
+    const ctx = canvas.getContext('2d');
+    const pointer = document.getElementById('pickerPointer');
+    const hueSlider = document.getElementById('hueSlider');
+
+    function init() {
+        resizeCanvas();
+        renderColorList();
+        updateUIFromActiveColor();
+        setupCanvasEvents();
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            drawCanvas();
+            positionPointer();
+        });
+    }
+
+    function resizeCanvas() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+
+    function switchMode(newMode) {
+        mode = newMode;
+        document.getElementById('btnBlend').classList.toggle('active', mode === 'blend');
+        document.getElementById('btnGradient').classList.toggle('active', mode === 'gradient');
+        updateCombinedOutput();
+    }
+
+    function renderColorList() {
+        const container = document.getElementById('colorList');
+        container.innerHTML = '';
+
+        colors.forEach((col, idx) => {
+            const item = document.createElement('div');
+            item.className = `color-item ${idx === activeIndex ? 'active' : ''}`;
+            item.onclick = () => selectColor(idx);
+
+            const dot = document.createElement('div');
+            dot.className = 'color-dot';
+            dot.style.backgroundColor = col;
+
+            item.appendChild(dot);
+
+            if (colors.length > 1) {
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.innerHTML = '✕';
+                removeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    removeColor(idx);
+                };
+                item.appendChild(removeBtn);
+            }
+
+            container.appendChild(item);
+        });
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'add-btn';
+        addBtn.innerHTML = '+';
+        addBtn.onclick = addNewColor;
+        container.appendChild(addBtn);
+    }
+
+    function addNewColor() {
+        const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+        colors.push(randomColor);
+        activeIndex = colors.length - 1;
+        renderColorList();
+        updateUIFromActiveColor();
+    }
+
+    function removeColor(index) {
+        colors.splice(index, 1);
+        if (activeIndex >= colors.length) activeIndex = colors.length - 1;
+        renderColorList();
+        updateUIFromActiveColor();
+    }
+
+    function selectColor(index) {
+        activeIndex = index;
+        renderColorList();
+        updateUIFromActiveColor();
+    }
+
+    function updateUIFromActiveColor() {
+        const hex = colors[activeIndex];
+        const rgb = hexToRgb(hex);
+        const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+        
+        currentHue = hsv.h;
+        currentSat = hsv.s;
+        currentVal = hsv.v;
+
+        hueSlider.value = currentHue;
+        drawCanvas();
+        positionPointer();
+        updateCombinedOutput();
+    }
+
+    function drawCanvas() {
+        if (!canvas.width || !canvas.height) return;
+        ctx.fillStyle = `hsl(${currentHue}, 100%, 50%)`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let whiteGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        whiteGrad.addColorStop(0, 'rgba(255,255,255,1)');
+        whiteGrad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = whiteGrad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        let blackGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        blackGrad.addColorStop(0, 'rgba(0,0,0,0)');
+        blackGrad.addColorStop(1, 'rgba(0,0,0,1)');
+        ctx.fillStyle = blackGrad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function positionPointer() {
+        const x = currentSat * canvas.width;
+        const y = (1 - currentVal) * canvas.height;
+        pointer.style.left = `${x}px`;
+        pointer.style.top = `${y}px`;
+    }
+
+    function setupCanvasEvents() {
+        let isDragging = false;
+
+        const handleMove = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            let x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+            let y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+            x = Math.max(0, Math.min(x, canvas.width));
+            y = Math.max(0, Math.min(y, canvas.height));
+
+            currentSat = x / canvas.width;
+            currentVal = 1 - (y / canvas.height);
+
+            positionPointer();
+            commitColorChange();
+        };
+
+        canvas.addEventListener('mousedown', (e) => { isDragging = true; handleMove(e); });
+        window.addEventListener('mousemove', (e) => { if (isDragging) handleMove(e); });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        canvas.addEventListener('touchstart', (e) => { isDragging = true; handleMove(e); });
+        window.addEventListener('touchmove', (e) => { if (isDragging) handleMove(e); });
+        window.addEventListener('touchend', () => { isDragging = false; });
+
+        hueSlider.addEventListener('input', () => {
+            currentHue = parseFloat(hueSlider.value);
+            drawCanvas();
+            commitColorChange();
+        });
+    }
+
+    function commitColorChange() {
+        const rgb = hsvToRgb(currentHue, currentSat, currentVal);
+        const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+        colors[activeIndex] = hex;
+
+        const dots = document.querySelectorAll('.color-dot');
+        if(dots[activeIndex]) {
+            dots[activeIndex].style.backgroundColor = hex;
+        }
+        updateCombinedOutput();
+    }
+
+    // AUTO APPLY FULL PAGE BACKGROUND LOGIC
+    function updateCombinedOutput() {
+        const preview = document.getElementById('previewBox');
+
+        if (mode === 'blend') {
+            let rTotal = 0, gTotal = 0, bTotal = 0;
+            colors.forEach(c => {
+                const rgb = hexToRgb(c);
+                rTotal += rgb.r; gTotal += rgb.g; bTotal += rgb.b;
+            });
+            const r = Math.round(rTotal / colors.length);
+            const g = Math.round(gTotal / colors.length);
+            const b = Math.round(bTotal / colors.length);
+
+            const blendedColor = `rgb(${r}, ${g}, ${b})`;
+            preview.style.background = blendedColor;
+            
+            // Auto Apply to Page
+            document.documentElement.style.setProperty('--bg-gradient', blendedColor);
+            document.documentElement.style.setProperty('--bg-dark', blendedColor);
+
+            updateDataCards(r, g, b);
+        } else {
+            let gradStr = colors.length === 1 
+                ? colors[0] 
+                : `linear-gradient(135deg, ${colors.join(', ')})`;
+            
+            preview.style.background = gradStr;
+            
+            // Auto Apply to Page
+            document.documentElement.style.setProperty('--bg-gradient', gradStr);
+
+            const activeRgb = hexToRgb(colors[activeIndex]);
+            updateDataCards(activeRgb.r, activeRgb.g, activeRgb.b);
+        }
+    }
+
+    function updateDataCards(r, g, b) {
+        document.getElementById('outHex').textContent = rgbToHex(r, g, b);
+        document.getElementById('outRgb').textContent = `${r}, ${g}, ${b}`;
+        document.getElementById('outCmyk').textContent = rgbToCmyk(r, g, b);
+        document.getElementById('outHsv').textContent = rgbToHsvFormatted(r, g, b);
+        document.getElementById('outHsl').textContent = rgbToHslFormatted(r, g, b);
+    }
+
+    function hexToRgb(hex) {
+        hex = hex.replace('#', '');
+        if(hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+        return {
+            r: parseInt(hex.substring(0, 2), 16) || 0,
+            g: parseInt(hex.substring(2, 4), 16) || 0,
+            b: parseInt(hex.substring(4, 6), 16) || 0
+        };
+    }
+
+    function rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+    }
+
+    function hsvToRgb(h, s, v) {
+        let c = v * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = v - c;
+        let r = 0, g = 0, b = 0;
+        if (h < 60) { r = c; g = x; }
+        else if (h < 120) { r = x; g = c; }
+        else if (h < 180) { g = c; b = x; }
+        else if (h < 240) { g = x; b = c; }
+        else if (h < 300) { r = x; b = c; }
+        else { r = c; b = x; }
+        return { r: Math.round((r + m) * 255), g: Math.round((g + m) * 255), b: Math.round((b + m) * 255) };
+    }
+
+    function rgbToHsv(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+        let h = 0, s = max === 0 ? 0 : d / max, v = max;
+        if (max !== min) {
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return { h: Math.round(h * 360), s, v };
+    }
+
+    function rgbToCmyk(r, g, b) {
+        let c = 1 - (r / 255), m = 1 - (g / 255), y = 1 - (b / 255), k = Math.min(c, Math.min(m, y));
+        if (k === 1) return "0%, 0%, 0%, 100%";
+        return `${Math.round(((c - k) / (1 - k)) * 100)}%, ${Math.round(((m - k) / (1 - k)) * 100)}%, ${Math.round(((y - k) / (1 - k)) * 100)}%, ${Math.round(k * 100)}%`;
+    }
+
+    function rgbToHsvFormatted(r, g, b) {
+        let hsv = rgbToHsv(r, g, b);
+        return `${hsv.h}°, ${Math.round(hsv.s * 100)}%, ${Math.round(hsv.v * 100)}%`;
+    }
+
+    function rgbToHslFormatted(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        let max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, h = 0, s = 0;
+        if (max !== min) {
+            let d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return `${Math.round(h * 360)}°, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%`;
+    }
+
+    function copyToClipboard(elementId) {
+        const text = document.getElementById(elementId).textContent;
+        navigator.clipboard.writeText(text);
+        alert('Copied: ' + text);
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
